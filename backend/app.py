@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import openai
 import os
@@ -7,6 +8,15 @@ import os
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 class Resume(BaseModel):
     content: str
@@ -26,17 +36,13 @@ async def analyze_resume(resume: Resume):
                 {"role": "user", "content": f"Please analyze this resume:\n\n{resume.content}"}
             ]
         )
-
         # Extract the response from ChatGPT
         gpt_response = response.choices[0].message.content
-
         # Split the response into overall assessment and advice
         parts = gpt_response.split("\n\n", 1)
         overall_assessment = parts[0]
         advice = parts[1] if len(parts) > 1 else "No specific advice provided."
-
         return ResumeAnalysis(response=overall_assessment, advice=advice)
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

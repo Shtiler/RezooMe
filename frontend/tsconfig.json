@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",  // For React 17+ to avoid needing to import React in JSX files
+    "strict": true,      // Optional: Enable strict mode for TypeScript (recommended)
+    "esModuleInterop": true,  // Optional: Makes working with CommonJS modules easier
+    "moduleResolution": "node"  // Resolve modules in Node.js style
+  },
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
